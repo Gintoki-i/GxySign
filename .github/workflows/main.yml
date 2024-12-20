@@ -3,12 +3,12 @@ name: "打卡"
 # 明确触发条件
 on:
   workflow_dispatch:  # 手动触发
-  schedule:
-    # 使用 UTC 时间，UTC 时间 对应 北京时间 -8 小时
-    - cron: "0 0 * * *"  # UTC 00:00 / 北京时间 08:00
-    - cron: "0 1 * * *"  # UTC 01:00 / 北京时间 09:00
-    - cron: "0 9 * * *"  # UTC 09:00 / 北京时间 17:00
-    - cron: "0 10 * * *" # UTC 10:00 / 北京时间 18:00
+  # schedule:
+  #   # 使用 UTC 时间，UTC 时间 对应 北京时间 -8 小时
+  #   - cron: "0 0 * * *"  # UTC 00:00 / 北京时间 08:00
+  #   - cron: "0 1 * * *"  # UTC 01:00 / 北京时间 09:00
+  #   - cron: "0 9 * * *"  # UTC 09:00 / 北京时间 17:00
+  #   - cron: "0 10 * * *" # UTC 10:00 / 北京时间 18:00
 
 # 配置并发控制，避免任务重叠执行
 concurrency:
@@ -55,6 +55,44 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
+
+      # 写入 Secrets 到 JSON 文件
+      - name: 写入 Secrets 到 config.json
+        env:
+          ZXS: ${{ secrets.ZXS_JSON }}
+          # QHG: ${{ secrets.QHG_JSON }}
+          HYF: ${{ secrets.HYF_JSON }}
+          LM: ${{ secrets.LM_JSON }}
+          BLQ: ${{ secrets.BLQ_JSON }}
+        run: |
+          mkdir -p user
+          if [ -z "$ZXS" ] || [ -z "$HYF" ] || [ -z "$LM" ] || [ -z "$BLQ" ]; then
+            echo "Secrets ZXS 或 QHG 为空，请检查配置！"
+            exit 1
+          fi
+          echo "$HYF" > user/config.json
+          echo "$LM" > user/config1.json
+          echo "$ZXS" > user/config3.json
+          echo "$BLQ" > user/config4.json
+          echo "写入完成。"
+
+      # 验证 JSON 文件是否正确写入
+      - name: 验证 JSON 文件是否正确写入
+        run: |
+          for file in user/config*.json; do
+            if [ -s "$file" ]; then
+              echo "文件 $file 已成功写入，大小为：$(stat -c%s "$file") 字节"
+              python -m json.tool "$file" > /dev/null
+              if [ $? -ne 0 ]; then
+                echo "文件 $file 不是合法的 JSON 格式！"
+                exit 1
+              fi
+            else
+              echo "文件 $file 写入失败或为空！"
+              exit 1
+            fi
+          done
 
       # 执行任务
       - name: Run sign in script
