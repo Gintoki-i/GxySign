@@ -35,6 +35,8 @@ def perform_clock_in(api_client: ApiClient, config: ConfigManager) -> Dict[str, 
     Returns:
         Dict[str, Any]: 执行结果。
     """
+    user_name = desensitize_name(config.get_value("userInfo.nikeName"))
+
     try:
         current_time = datetime.now()
         current_hour = current_time.hour
@@ -79,10 +81,10 @@ def perform_clock_in(api_client: ApiClient, config: ConfigManager) -> Dict[str, 
                 last_checkin_info["createTime"], "%Y-%m-%d %H:%M:%S"
             )
             if last_checkin_time.date() == current_time.date():
-                logger.info(f"今日 {display_type} 卡已打，无需重复打卡")
+                logger.info(f"{user_name} 今日 {display_type} 卡已打，无需重复打卡")
                 return {
                     "status": "skip",
-                    "message": f"今日 {display_type} 卡已打，无需重复打卡",
+                    "message": f"{user_name} 今日 {display_type} 卡已打，无需重复打卡",
                     "task_type": "打卡",
                 }
 
@@ -125,11 +127,13 @@ def perform_clock_in(api_client: ApiClient, config: ConfigManager) -> Dict[str, 
             },
         }
     except Exception as e:
-        logger.error(f"打卡失败: {e}")
-        return {"status": "fail", "message": f"打卡失败: {str(e)}", "task_type": "打卡"}
+        logger.error(f"{user_name} 打卡失败: {e}")
+        return {"status": "fail", "message": f"{user_name} 打卡失败: {str(e)}", "task_type": "打卡"}
 
 
 def submit_daily_report(api_client: ApiClient, config: ConfigManager) -> Dict[str, Any]:
+    user_name = desensitize_name(config.get_value("userInfo.nikeName"))
+
     """
     提交日报。
 
@@ -141,7 +145,7 @@ def submit_daily_report(api_client: ApiClient, config: ConfigManager) -> Dict[st
         Dict[str, Any]: 执行结果。
     """
     if not config.get_value("config.reportSettings.daily.enabled"):
-        logger.info("用户未开启日报提交功能，跳过日报提交任务")
+        logger.info(f"{user_name}用户未开启日报提交功能，跳过日报提交任务")
         return {
             "status": "skip",
             "message": "用户未开启日报提交功能",
@@ -222,7 +226,7 @@ def submit_daily_report(api_client: ApiClient, config: ConfigManager) -> Dict[st
 
 
 def submit_weekly_report(
-    config: ConfigManager, api_client: ApiClient
+        config: ConfigManager, api_client: ApiClient
 ) -> Dict[str, Any]:
     """提交周报
 
@@ -233,8 +237,10 @@ def submit_weekly_report(
     Returns:
         Dict[str, Any]: 执行结果。
     """
+    user_name = desensitize_name(config.get_value("userInfo.nikeName"))
+
     if not config.get_value("config.reportSettings.weekly.enabled"):
-        logger.info("用户未开启周报提交功能，跳过周报提交任务")
+        logger.info(f"{user_name}用户未开启周报提交功能，跳过周报提交任务")
         return {
             "status": "skip",
             "message": "用户未开启周报提交功能",
@@ -324,7 +330,7 @@ def submit_weekly_report(
 
 
 def submit_monthly_report(
-    config: ConfigManager, api_client: ApiClient
+        config: ConfigManager, api_client: ApiClient
 ) -> Dict[str, Any]:
     """提交月报
 
@@ -335,8 +341,10 @@ def submit_monthly_report(
     Returns:
         Dict[str, Any]: 执行结果。
     """
+    user_name = desensitize_name(config.get_value("userInfo.nikeName"))
+
     if not config.get_value("config.reportSettings.monthly.enabled"):
-        logger.info("用户未开启月报提交功能，跳过月报提交任务")
+        logger.info(f"{user_name}用户未开启月报提交功能，跳过月报提交任务")
         return {
             "status": "skip",
             "message": "用户未开启月报提交功能",
@@ -350,7 +358,7 @@ def submit_monthly_report(
     submit_day = config.get_value("config.reportSettings.monthly.submitTime")
 
     if current_time.day != min(submit_day, last_day_of_month.day) or not (
-        current_time.hour >= 12
+            current_time.hour >= 12
     ):
         logger.info("未到月报提交时间")
         return {
@@ -555,6 +563,7 @@ def execute_tasks(selected_files: Optional[List[str]] = None):
 if __name__ == "__main__":
     # 读取命令行参数
     parser = argparse.ArgumentParser(description="运行工学云任务")
+    logger.info("-----------------------------------------")
     parser.add_argument(
         "--file",
         type=str,
@@ -565,3 +574,5 @@ if __name__ == "__main__":
 
     # 执行命令
     execute_tasks(args.file)
+    logger.info("-----------------------------------------")
+
