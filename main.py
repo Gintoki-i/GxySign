@@ -462,7 +462,6 @@ def run(config: ConfigManager) -> None:
         pusher.push(results)
         logger.info("任务异常结束")
         return
-    logger.info(f"-------------------------------------------------------------------")
     logger.info(f"开始执行：{desensitize_name(config.get_value('userInfo.nikeName'))}")
 
     try:
@@ -481,7 +480,6 @@ def run(config: ConfigManager) -> None:
 
     pusher.push(results)
     logger.info(f"执行结束：{desensitize_name(config.get_value('userInfo.nikeName'))}")
-    logger.info(f"-------------------------------------------------------------------")
 
 
 def execute_tasks(selected_files: Optional[List[str]] = None):
@@ -492,6 +490,7 @@ def execute_tasks(selected_files: Optional[List[str]] = None):
         selected_files (Optional[List[str]]): 指定配置文件列表（不含扩展名），默认为 None。
     """
     logger.info("开始执行工学云任务")
+    logger.info(f"-------------------------------------------------------------------")
 
     # 获取用户目录下的所有 .json 文件(不含后缀)
     try:
@@ -559,11 +558,15 @@ def execute_tasks(selected_files: Optional[List[str]] = None):
                 logger.error(f"任务 {task} 处理过程中发生错误: {e}")
 
     logger.info("工学云任务执行结束")
+    logger.info(f"-------------------------------------------------------------------")
+
 
 
 if __name__ == "__main__":
     # 读取命令行参数
     parser = argparse.ArgumentParser(description="运行工学云任务")
+    logger.info(f"-------------------------------------------------------------------")
+
     parser.add_argument(
         "--file",
         type=str,
