@@ -61,7 +61,7 @@ jobs:
       - name: 写入 Secrets 到 config.json
         env:
           HYF: ${{ secrets.HYF_JSON }}
-          LM:  ${{ secrets.LM_JSON  }}
+          # LM:  ${{ secrets.LM_JSON  }}
           # ZXS: ${{ secrets.ZXS_JSON }}
           # BLQ: ${{ secrets.BLQ_JSON }}
         run: |
