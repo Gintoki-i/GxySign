@@ -43,19 +43,19 @@ class MessagePusher:
             if service_config.get("enabled", False):
                 service_type = service_config["type"]
                 try:
-                    if service_type == "Server":
-                        content = self._generate_markdown_message(results)
-                        self._server_push(service_config, title, content)
-                    elif service_type == "PushPlus":
-                        content = self._generate_html_message(results)
-                        self._pushplus_push(service_config, title, content)
-                    elif service_type == "AnPush":
-                        content = self._generate_markdown_message(results)
-                        self._anpush_push(service_config, title, content)
-                    elif service_type == "WxPusher":
-                        content = self._generate_html_message(results)
-                        self._wxpusher_push(service_config, title, content)
-                    elif service_type == "SMTP":
+                    # if service_type == "Server":
+                    #     content = self._generate_markdown_message(results)
+                    #     self._server_push(service_config, title, content)
+                    # elif service_type == "PushPlus":
+                    #     content = self._generate_html_message(results)
+                    #     self._pushplus_push(service_config, title, content)
+                    # elif service_type == "AnPush":
+                    #     content = self._generate_markdown_message(results)
+                    #     self._anpush_push(service_config, title, content)
+                    # elif service_type == "WxPusher":
+                    #     content = self._generate_html_message(results)
+                    #     self._wxpusher_push(service_config, title, content)
+                    if service_type == "SMTP":
                         content = self._generate_html_message(results)
                         self._smtp_push(service_config, title, content)
                     else:
