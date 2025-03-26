@@ -113,7 +113,7 @@ def perform_clock_in(api_client: ApiClient, config: ConfigManager) -> Dict[str, 
         }
 
         api_client.submit_clock_in(checkin_info)
-        logger.info(f"用户 {user_name} {display_type} 打卡成功")
+        logger.info(f"✅用户 {user_name} {display_type} 打卡成功")
 
         return {
             "status": "success",
@@ -127,7 +127,7 @@ def perform_clock_in(api_client: ApiClient, config: ConfigManager) -> Dict[str, 
             },
         }
     except Exception as e:
-        logger.error(f"{user_name} 打卡失败: {e}")
+        logger.error(f"❌{user_name} 打卡失败: {e}")
         return {"status": "fail", "message": f"{user_name} 打卡失败: {str(e)}", "task_type": "打卡"}
 
 
@@ -525,7 +525,7 @@ def execute_tasks(selected_files: Optional[List[str]] = None):
             raise ValueError("环境变量 USER 必须包含 JSON 数组")
         logger.info(f"从环境变量中获取到 {len(user_configs)} 个配置")
     except (json.JSONDecodeError, ValueError) as e:
-        logger.error(f"解析环境变量 USER 失败: {e}")
+        logger.error(f"❌解析环境变量 USER 失败: {e}")
         user_configs = []
 
     # 检查是否存在有效配置
@@ -541,7 +541,7 @@ def execute_tasks(selected_files: Optional[List[str]] = None):
             tasks.append(ConfigManager(**kwargs))
             logger.debug(f"已添加来自 {source} 的任务配置")
         except Exception as err:
-            logger.error(f"创建来自 {source} 的任务失败: {err}")
+            logger.error(f"❌创建来自 {source} 的任务失败: {err}")
 
     # 处理环境变量中的配置
     for config in user_configs:
@@ -564,9 +564,9 @@ def execute_tasks(selected_files: Optional[List[str]] = None):
             try:
                 future.result()
             except Exception as e:
-                logger.error(f"任务 {task} 处理过程中发生错误: {e}")
+                logger.error(f"❌任务 {task} 处理过程中发生错误: {e}")
 
-    logger.info("工学云任务执行结束")
+    logger.info("✅工学云任务执行结束")
     logger.info(f"-------------------------------------------------------------------")
 
 
