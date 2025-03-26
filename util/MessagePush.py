@@ -62,7 +62,7 @@ class MessagePusher:
                         logger.warning(f"不支持的推送服务类型: {service_type}")
 
                 except Exception as e:
-                    logger.error(f"{service_type} 消息推送失败: {str(e)}")
+                    logger.error(f"❌{service_type} 消息推送失败: {str(e)}")
                     continue
 
     def _server_push(self, config: dict[str, Any], title: str, content: str):
@@ -167,7 +167,7 @@ class MessagePusher:
         with smtplib.SMTP_SSL(config["host"], config["port"]) as server:
             server.login(config["username"], config["password"])
             server.send_message(msg)
-            logger.info(f"邮件已发送成功")
+            logger.info(f"✅邮件已发送成功")
             server.quit()
 
     @staticmethod
