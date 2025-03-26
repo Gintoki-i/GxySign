@@ -64,14 +64,15 @@ jobs:
           # LM:  ${{ secrets.LM_JSON  }}
           # ZXS: ${{ secrets.ZXS_JSON }}
           # BLQ: ${{ secrets.BLQ_JSON }}
+          # if [ -z "$HYF" ] || [ -z "$LM" ] ; then
         run: |
           mkdir -p user
-          if [ -z "$HYF" ] || [ -z "$LM" ] ; then
+          if [ -z "$HYF" ] ; then
             echo "Secrets 为空，请检查配置！"
             exit 1
           fi
           echo "$HYF" > user/config.json
-          echo "$LM" > user/config1.json
+          # echo "$LM" > user/config1.json
           echo "写入完成。"
 
       # 验证 JSON 文件是否正确写入
