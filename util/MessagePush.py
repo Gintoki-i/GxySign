@@ -360,13 +360,13 @@ class MessagePusher:
             }}
             /* 移除.min-width限制，确保卡片自适应分配空间 */
             .col{{
-                padding:0 1px;
+                padding:2%;
             }}
             .card{{
                 background-color:var(--card-bg);
                 border:1px solid var(--card-border);
                 border-radius:5px;
-                padding:20px;
+                padding:15px;
                 margin-bottom:20px;
                 transition:background-color .3s;
                 text-align: center;
@@ -392,7 +392,7 @@ class MessagePusher:
                 padding:10px;
                 border-radius:5px
             }}
-            @media(max-width:768px){{
+            @media(max-width:10px){{
                 /* 在小屏幕下允许换行 */
                 .row{{
                     flex-wrap: wrap;
@@ -405,25 +405,25 @@ class MessagePusher:
             <div class="row">            
                 <div class="col">
                     <div class="card">
-                        <h3 class="card-title">成功</h3>
+                        <h6 class="card-title">成功</h6>
                         <p class="card-text text-success" style="font-size:2em">{status_counts['success']}</p>
                     </div>
                 </div>
                 <div class="col">
                     <div class="card">
-                        <h3 class="card-title">失败</h3>
+                        <h6 class="card-title">失败</h6>
                         <p class="card-text text-danger" style="font-size:2em">{status_counts['fail']}</p>
                     </div>
                 </div>
                 <div class="col">
                     <div class="card">
-                        <h3 class="card-title">跳过</h3>
+                        <h6 class="card-title">跳过</h6>
                         <p class="card-text text-warning" style="font-size:2em">{status_counts['skip']}</p>
                     </div>
                 </div>
                 <div class="col">
                     <div class="card">
-                        <h3 class="card-title">总数</h3>
+                        <h6 class="card-title">总数</h6>
                         <p class="card-text" style="font-size:2em">{total_tasks}</p>
                     </div>
                 </div>
