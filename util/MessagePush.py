@@ -238,7 +238,7 @@ class MessagePusher:
 
         return "".join(message_parts)
 
-    @staticmethod
+    
     # def _generate_html_message(results: List[Dict[str, Any]]) -> str:
     #     """
     #     生成美观的HTML格式报告。
@@ -295,13 +295,16 @@ class MessagePusher:
     #     html += """</div></body></html>"""
     #
     #     return html
+    @staticmethod
     def _generate_html_message(results: List[Dict[str, Any]]) -> str:
-        """
-        生成美观的HTML格式报告。
-        Args:
-            results (List[Dict[str, Any]]): 任务执行结果列表。
-        Returns:
-            str: HTML格式的消息。
+         """
+            生成美观的HTML格式报告。
+        
+            Args:
+                results (List[Dict[str, Any]]): 任务执行结果列表。
+        
+            Returns:
+                str: HTML格式的消息。
         """
         status_counts = Counter(result.get("status", "unknown") for result in results)
         total_tasks = len(results)
