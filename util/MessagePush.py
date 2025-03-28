@@ -239,59 +239,245 @@ class MessagePusher:
         return "".join(message_parts)
 
     @staticmethod
+    # def _generate_html_message(results: List[Dict[str, Any]]) -> str:
+    #     """
+    #     生成美观的HTML格式报告。
+
+    #     Args:
+    #         results (List[Dict[str, Any]]): 任务执行结果列表。
+
+    #     Returns:
+    #         str: HTML格式的消息。
+    #     """
+    #     status_counts = Counter(result.get("status", "unknown") for result in results)
+    #     total_tasks = len(results)
+
+    #     html = f"""<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>工学云任务执行报告</title><style>*{{margin:0;}}:root{{--bg-color:#f8f9fa;--text-color:#212529;--card-bg:#fff;--card-border:#dee2e6;--success-color:#28a745;--danger-color:#dc3545;--warning-color:#ffc107;--secondary-color:#6c757d}}@media(prefers-color-scheme:dark){{:root{{--bg-color:#343a40;--text-color:#f8f9fa;--card-bg:#495057;--card-border:#6c757d;--success-color:#5cb85c;--danger-color:#d9534f;--warning-color:#f0ad4e;--secondary-color:#a9a9a9}}}}body{{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.5;color:var(--text-color);background-color:var(--bg-color);margin:0;padding:20px;transition:background-color .3s}}h1,h2,h3{{margin-top:0}}h1{{text-align:center;margin-bottom:30px}}h2{{margin-bottom:20px}}.row{{display:flex;flex-wrap:wrap;margin:0 -15px}}.col{{flex:1;padding:0 15px;min-width:250px}}.card{{background-color:var(--card-bg);border:1px solid var(--card-border);border-radius:5px;padding:20px;margin-bottom:20px;transition:background-color .3s}}.card-title{{margin-top:0}}.text-center{{text-align:center}}.text-success{{color:var(--success-color)}}.text-danger{{color:var(--danger-color)}}.text-warning{{color:var(--warning-color)}}.text-secondary{{color:var(--secondary-color)}}.bg-light{{background-color:rgba(0,0,0,.05);border-radius:5px;padding:10px}}.report-preview{{font-style:italic;margin-top:10px}}.full-report{{display:none}}.show-report:checked+.full-report{{display:block}}pre{{white-space:pre-wrap;word-wrap:break-word;background-color:rgba(0,0,0,.05);padding:10px;border-radius:5px}}@media(max-width:768px){{.row{{flex-direction:column}}}}</style></head><body><div class="container"><h1>工学云任务执行报告</h1><div class="row"><div class="col"><div class="card text-center"><h3 class="card-title">总任务数</h3><p class="card-text" style="font-size:2em">{total_tasks}</p></div></div><div class="col"><div class="card text-center"><h3 class="card-title">成功</h3><p class="card-text text-success" style="font-size:2em">{status_counts['success']}</p></div></div><div class="col"><div class="card text-center"><h3 class="card-title">失败</h3><p class="card-text text-danger" style="font-size:2em">{status_counts['fail']}</p></div></div><div class="col"><div class="card text-center"><h3 class="card-title">跳过</h3><p class="card-text text-warning" style="font-size:2em">{status_counts['skip']}</p></div></div></div><h2>详细任务报告</h2>"""
+
+    #     for result in results:
+    #         task_type = result.get("task_type", "未知任务")
+    #         status = result.get("status", "unknown")
+    #         status_emoji = MessagePusher.STATUS_EMOJIS.get(
+    #             status, MessagePusher.STATUS_EMOJIS["unknown"]
+    #         )
+    #         status_class = {
+    #             "success": "text-success",
+    #             "fail": "text-danger",
+    #             "skip": "text-warning",
+    #             "unknown": "text-secondary",
+    #         }.get(status, "text-secondary")
+
+    #         html += f"""<div class="card"><h3 class="card-title">{status_emoji} {task_type}</h3><p><strong>状态：</strong><span class="{status_class}">{status}</span></p><p><strong>结果：</strong>{result.get('message', '无消息')}</p>"""
+
+    #         details = result.get("details")
+    #         if status == "success" and isinstance(details, dict):
+    #             html += '<div class="bg-light"><h4>详细信息</h4>'
+    #             for key, value in details.items():
+    #                 html += f"<p><strong>{key}：</strong>{value}</p>"
+    #             html += "</div>"
+
+    #         if status == "success" and task_type in [
+    #             "日报提交",
+    #             "周报提交",
+    #             "月报提交",
+    #         ]:
+    #             report_content = result.get("report_content", "")
+    #             if report_content:
+    #                 preview = (
+    #                     f"{report_content[:50]}..."
+    #                     if len(report_content) > 50
+    #                     else report_content
+    #                 )
+    #                 html += f"""<div class="report-preview"><details><summary><strong>报告预览：</strong>{preview}</summary><div class="full-report"><pre>{report_content}</pre></div></details></div>"""
+
+    #         html += "</div>"
+
+    #     html += """</div></body></html>"""
+
+    #     return html
     def _generate_html_message(results: List[Dict[str, Any]]) -> str:
-        """
-        生成美观的HTML格式报告。
+    """
+    生成美观的HTML格式报告。
 
-        Args:
-            results (List[Dict[str, Any]]): 任务执行结果列表。
+    Args:
+        results (List[Dict[str, Any]]): 任务执行结果列表。
 
-        Returns:
-            str: HTML格式的消息。
-        """
-        status_counts = Counter(result.get("status", "unknown") for result in results)
-        total_tasks = len(results)
+    Returns:
+        str: HTML格式的消息。
+    """
+    from collections import Counter
+    status_counts = Counter(result.get("status", "unknown") for result in results)
+    total_tasks = len(results)
 
-        html = f"""<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>工学云任务执行报告</title><style>*{{margin:0;}}:root{{--bg-color:#f8f9fa;--text-color:#212529;--card-bg:#fff;--card-border:#dee2e6;--success-color:#28a745;--danger-color:#dc3545;--warning-color:#ffc107;--secondary-color:#6c757d}}@media(prefers-color-scheme:dark){{:root{{--bg-color:#343a40;--text-color:#f8f9fa;--card-bg:#495057;--card-border:#6c757d;--success-color:#5cb85c;--danger-color:#d9534f;--warning-color:#f0ad4e;--secondary-color:#a9a9a9}}}}body{{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.5;color:var(--text-color);background-color:var(--bg-color);margin:0;padding:20px;transition:background-color .3s}}h1,h2,h3{{margin-top:0}}h1{{text-align:center;margin-bottom:30px}}h2{{margin-bottom:20px}}.row{{display:flex;flex-wrap:wrap;margin:0 -15px}}.col{{flex:1;padding:0 15px;min-width:250px}}.card{{background-color:var(--card-bg);border:1px solid var(--card-border);border-radius:5px;padding:20px;margin-bottom:20px;transition:background-color .3s}}.card-title{{margin-top:0}}.text-center{{text-align:center}}.text-success{{color:var(--success-color)}}.text-danger{{color:var(--danger-color)}}.text-warning{{color:var(--warning-color)}}.text-secondary{{color:var(--secondary-color)}}.bg-light{{background-color:rgba(0,0,0,.05);border-radius:5px;padding:10px}}.report-preview{{font-style:italic;margin-top:10px}}.full-report{{display:none}}.show-report:checked+.full-report{{display:block}}pre{{white-space:pre-wrap;word-wrap:break-word;background-color:rgba(0,0,0,.05);padding:10px;border-radius:5px}}@media(max-width:768px){{.row{{flex-direction:column}}}}</style></head><body><div class="container"><h1>工学云任务执行报告</h1><div class="row"><div class="col"><div class="card text-center"><h3 class="card-title">总任务数</h3><p class="card-text" style="font-size:2em">{total_tasks}</p></div></div><div class="col"><div class="card text-center"><h3 class="card-title">成功</h3><p class="card-text text-success" style="font-size:2em">{status_counts['success']}</p></div></div><div class="col"><div class="card text-center"><h3 class="card-title">失败</h3><p class="card-text text-danger" style="font-size:2em">{status_counts['fail']}</p></div></div><div class="col"><div class="card text-center"><h3 class="card-title">跳过</h3><p class="card-text text-warning" style="font-size:2em">{status_counts['skip']}</p></div></div></div><h2>详细任务报告</h2>"""
+    html = f"""<!DOCTYPE html>
+    <html lang="zh-CN">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>工学云任务执行报告</title>
+    <style>
+        *{{margin:0;}}
+        :root{{
+            --bg-color:#f8f9fa;
+            --text-color:#212529;
+            --card-bg:#fff;
+            --card-border:#dee2e6;
+            --success-color:#28a745;
+            --danger-color:#dc3545;
+            --warning-color:#ffc107;
+            --secondary-color:#6c757d
+        }}
+        @media(prefers-color-scheme:dark){{
+            :root{{
+                --bg-color:#343a40;
+                --text-color:#f8f9fa;
+                --card-bg:#495057;
+                --card-border:#6c757d;
+                --success-color:#5cb85c;
+                --danger-color:#d9534f;
+                --warning-color:#f0ad4e;
+                --secondary-color:#a9a9a9
+            }}
+        }}
+        body{{
+            font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+            line-height:1.5;
+            color:var(--text-color);
+            background-color:var(--bg-color);
+            margin:0;
+            padding:20px;
+            transition:background-color .3s
+        }}
+        h1,h2,h3{{margin-top:0}}
+        h1{{text-align:center;margin-bottom:30px}}
+        /* 修改.row，取消自动换行，保证四个卡片始终在一行 */
+        .row{{
+            display:flex;
+            flex-wrap: nowrap;
+            margin:0 -15px;
+            justify-content: space-between;
+        }}
+        /* 移除.min-width限制，确保卡片自适应分配空间 */
+        .col{{
+            flex:1;
+            padding:0 15px;
+        }}
+        .card{{
+            background-color:var(--card-bg);
+            border:1px solid var(--card-border);
+            border-radius:5px;
+            padding:20px;
+            margin-bottom:20px;
+            transition:background-color .3s;
+            text-align: center;
+        }}
+        .card-title{{margin-top:0}}
+        .text-center{{text-align:center}}
+        .text-success{{color:var(--success-color)}}
+        .text-danger{{color:var(--danger-color)}}
+        .text-warning{{color:var(--warning-color)}}
+        .text-secondary{{color:var(--secondary-color)}}
+        .bg-light{{
+            background-color:rgba(0,0,0,.05);
+            border-radius:5px;
+            padding:10px
+        }}
+        .report-preview{{font-style:italic;margin-top:10px}}
+        .full-report{{display:none}}
+        .show-report:checked+.full-report{{display:block}}
+        pre{{
+            white-space:pre-wrap;
+            word-wrap:break-word;
+            background-color:rgba(0,0,0,.05);
+            padding:10px;
+            border-radius:5px
+        }}
+        @media(max-width:768px){{
+            /* 在小屏幕下允许换行 */
+            .row{{
+                flex-wrap: wrap;
+            }}
+        }}
+    </style>
+    </head>
+    <body>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <h3 class="card-title">成功</h3>
+                    <p class="card-text text-success" style="font-size:2em">{status_counts['success']}</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <h3 class="card-title">失败</h3>
+                    <p class="card-text text-danger" style="font-size:2em">{status_counts['fail']}</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <h3 class="card-title">跳过</h3>
+                    <p class="card-text text-warning" style="font-size:2em">{status_counts['skip']}</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <h3 class="card-title">总数</h3>
+                    <p class="card-text" style="font-size:2em">{total_tasks}</p>
+                </div>
+            </div>
+        </div>
+        <h2>详细任务报告</h2>"""
 
-        for result in results:
-            task_type = result.get("task_type", "未知任务")
-            status = result.get("status", "unknown")
-            status_emoji = MessagePusher.STATUS_EMOJIS.get(
-                status, MessagePusher.STATUS_EMOJIS["unknown"]
-            )
-            status_class = {
-                "success": "text-success",
-                "fail": "text-danger",
-                "skip": "text-warning",
-                "unknown": "text-secondary",
-            }.get(status, "text-secondary")
+    # 遍历任务详情
+    for result in results:
+        task_type = result.get("task_type", "未知任务")
+        status = result.get("status", "unknown")
+        # 获取状态对应的 Emoji 及样式，假设 MessagePusher.STATUS_EMOJIS 已定义
+        status_emoji = MessagePusher.STATUS_EMOJIS.get(
+            status, MessagePusher.STATUS_EMOJIS["unknown"]
+        )
+        status_class = {
+            "success": "text-success",
+            "fail": "text-danger",
+            "skip": "text-warning",
+            "unknown": "text-secondary",
+        }.get(status, "text-secondary")
 
-            html += f"""<div class="card"><h3 class="card-title">{status_emoji} {task_type}</h3><p><strong>状态：</strong><span class="{status_class}">{status}</span></p><p><strong>结果：</strong>{result.get('message', '无消息')}</p>"""
+        html += f"""<div class="card"><h3 class="card-title">{status_emoji} {task_type}</h3>
+        <p><strong>状态：</strong><span class="{status_class}">{status}</span></p>
+        <p><strong>结果：</strong>{result.get('message', '无消息')}</p>"""
 
-            details = result.get("details")
-            if status == "success" and isinstance(details, dict):
-                html += '<div class="bg-light"><h4>详细信息</h4>'
-                for key, value in details.items():
-                    html += f"<p><strong>{key}：</strong>{value}</p>"
-                html += "</div>"
-
-            if status == "success" and task_type in [
-                "日报提交",
-                "周报提交",
-                "月报提交",
-            ]:
-                report_content = result.get("report_content", "")
-                if report_content:
-                    preview = (
-                        f"{report_content[:50]}..."
-                        if len(report_content) > 50
-                        else report_content
-                    )
-                    html += f"""<div class="report-preview"><details><summary><strong>报告预览：</strong>{preview}</summary><div class="full-report"><pre>{report_content}</pre></div></details></div>"""
-
+        details = result.get("details")
+        if status == "success" and isinstance(details, dict):
+            html += '<div class="bg-light"><h4>详细信息</h4>'
+            for key, value in details.items():
+                html += f"<p><strong>{key}：</strong>{value}</p>"
             html += "</div>"
 
-        html += """</div></body></html>"""
+        if status == "success" and task_type in [
+            "日报提交",
+            "周报提交",
+            "月报提交",
+        ]:
+            report_content = result.get("report_content", "")
+            if report_content:
+                preview = (
+                    f"{report_content[:50]}..."
+                    if len(report_content) > 50
+                    else report_content
+                )
+                html += f"""<div class="report-preview">
+                <details>
+                <summary><strong>报告预览：</strong>{preview}</summary>
+                <div class="full-report"><pre>{report_content}</pre></div>
+                </details>
+                </div>"""
 
-        return html
+        html += "</div>"
+
+    html += """</div></body></html>"""
+
+    return html
+
