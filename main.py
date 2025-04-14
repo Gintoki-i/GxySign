@@ -1,5 +1,6 @@
 import logging
 import os
+import time
 import json
 import argparse
 import random
@@ -575,7 +576,7 @@ if __name__ == "__main__":
     # 读取命令行参数
     parser = argparse.ArgumentParser(description="运行工学云任务")
     logger.info(f"-------------------------------------------------------------------")
-
+    print(time.strftime('%Y-%m-%d'))
     parser.add_argument(
         "--file",
         type=str,
