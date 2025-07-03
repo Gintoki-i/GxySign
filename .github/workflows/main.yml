@@ -60,8 +60,8 @@ jobs:
       # 写入 Secrets 到 JSON 文件
       - name: 写入 Secrets 到 config.json
         env:
-          HYF: ${{ secrets.HYF_JSON }}
-          LM:  ${{ secrets.LM_JSON  }}
+          #HYF: ${{ secrets.HYF_JSON }}
+          #LM:  ${{ secrets.LM_JSON  }}
           # ZXS: ${{ secrets.ZXS_JSON }}
           # BLQ: ${{ secrets.BLQ_JSON }}
           # if [ -z "$HYF" ] || [ -z "$LM" ] ; then
